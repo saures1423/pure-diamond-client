@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-	baseURL: 'https://pure-diamond.onrender.com',
+	baseURL: process.env.REACT_APP_BASE_URL,
 
 	// timeout: 10000,
 	// headers: {
