@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import NavbarComponent from './components/NavbarComponent';
+import Router from './routes';
+import { useState } from 'react';
+import { BrandStateContext } from './context/BrandStateContext';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+	function GlobalStateProvider({ children }) {
+		const [globalState, setGlobalState] = useState({});
+		const [edit, setEdit] = useState(false);
+		const [lastID, setLastID] = useState(0);
+
+		return (
+			<BrandStateContext.Provider
+				value={{ globalState, setGlobalState, edit, setEdit, lastID, setLastID }}
+			>
+				{children}
+			</BrandStateContext.Provider>
+		);
+	}
+	return (
+		<GlobalStateProvider>
+			<NavbarComponent />
+
+			<Router />
+		</GlobalStateProvider>
+	);
 }
-
-export default App;
