@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, Col, Container, Row, Spinner, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { useGetAllBrands } from '../hooks/query/brand';
 import { useGetAllItem } from '../hooks/query/item';
 
@@ -22,7 +23,7 @@ const Home = () => {
 								</Spinner>
 							)}
 							<Card.Text>{brand?.length}</Card.Text>
-							<Button variant="primary" href="/brand">
+							<Button variant="primary" as={Link} to="/brand">
 								ADD NEW
 							</Button>
 						</Card.Body>
@@ -39,7 +40,7 @@ const Home = () => {
 								</Spinner>
 							)}
 							<Card.Text>{item?.length}</Card.Text>
-							<Button variant="primary" href="/item">
+							<Button variant="primary" as={Link} to="/item">
 								ADD NEW
 							</Button>
 						</Card.Body>
