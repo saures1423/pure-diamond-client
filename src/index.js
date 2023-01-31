@@ -29,10 +29,10 @@ const queryClient = new QueryClient({
 		queries: {
 			refetchOnWindowFocus: false,
 			retry: 1,
-			// networkMode: 'offlineFirst',
+			networkMode: 'offlineFirst',
 		},
 		mutations: {
-			// networkMode: 'offlineFirst',
+			networkMode: 'offlineFirst',
 		},
 	},
 });

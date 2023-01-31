@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useContext, useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -5,11 +6,13 @@ import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { BrandStateContext } from '../context/BrandStateContext';
-import { useCreateBrand, useEditBrand } from '../hooks/query/brand';
+import { useCreateBrand, useEditBrand, useGetLastID } from '../hooks/query/brand';
 
 function BrandForm() {
+	const queryClient = useQueryClient();
 	const { globalState, edit, setEdit, lastID } = useContext(BrandStateContext);
 
+	const { data: brandLastID } = useGetLastID();
 	const {
 		register,
 		handleSubmit,
@@ -24,7 +27,8 @@ function BrandForm() {
 	const { mutate, isLoading } = useCreateBrand({
 		onSuccess: () => {
 			reset();
-			setValue('BrandID', lastID);
+			queryClient.invalidateQueries(['lastID']);
+			setValue('BrandID', brandLastID?.lastID[0]?.AUTO_INCREMENT);
 			toast.success('New brand name has been added.');
 		},
 	});
@@ -33,9 +37,14 @@ function BrandForm() {
 		onSuccess: (data) => {
 			if (Object.keys(data).length === 0) return;
 
+			console.log(
+				'🚀 ~ file: BrandForm.js:44 ~ BrandForm ~ data?.lastID[0]?.AUTO_INCREMENT',
+				brandLastID?.lastID[0]?.AUTO_INCREMENT
+			);
+
 			setEdit(false);
 			reset();
-			setValue('BrandID', lastID);
+			setValue('BrandID', brandLastID?.lastID[0]?.AUTO_INCREMENT);
 			toast.success('Brand has been updated.');
 		},
 	});
@@ -51,8 +60,8 @@ function BrandForm() {
 	}, [edit, globalState?.BrandID, globalState?.BrandName, globalState?.IsActive, setValue]);
 
 	useEffect(() => {
-		setValue('BrandID', lastID);
-	}, [lastID, setValue]);
+		setValue('BrandID', brandLastID?.lastID[0]?.AUTO_INCREMENT);
+	}, [brandLastID?.lastID, setValue]);
 
 	const onSubmit = (data) => {
 		delete data?.BrandID;
@@ -126,7 +135,7 @@ function BrandForm() {
 					onClick={() => {
 						reset();
 						setEdit(false);
-						setValue('BrandID', lastID);
+						setValue('BrandID', brandLastID?.lastID[0]?.AUTO_INCREMENT);
 					}}
 					style={{ display: editLoading ? 'none' : 'initial' }}
 				>

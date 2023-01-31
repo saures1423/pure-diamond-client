@@ -71,7 +71,9 @@ const BrandTable = ({ data }) => {
 
 	const filteredItems = data?.filter(
 		(item) =>
-			item.BrandName.toLowerCase().includes(filterText.toLowerCase()) || item.BrandID === filterText
+			item.BrandName.toLowerCase().includes(filterText.toLowerCase()) ||
+			item.BrandID.toString().includes(filterText) ||
+			item.IsActive.toLowerCase().includes(filterText.toLowerCase())
 	);
 
 	const subHeaderComponentMemo = React.useMemo(() => {

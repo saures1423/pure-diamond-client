@@ -62,3 +62,18 @@ export const deleteItem = async ({ ItemID }) => {
 		throw new Error(message);
 	}
 };
+
+export const getLastID = async () => {
+	try {
+		const response = await API.get(`/item/lastID`);
+
+		return response.data;
+	} catch (error) {
+		const message =
+			(error.response && error.response.data && error.response.data.message) ||
+			error.message ||
+			error.toString() ||
+			error.request;
+		throw new Error(message);
+	}
+};

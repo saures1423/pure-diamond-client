@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createBrand, deleteBrand, editBrand, getAllBrands } from '../../api/brandApi';
+import { createBrand, deleteBrand, editBrand, getAllBrands, getLastID } from '../../api/brandApi';
 
 export const useGetAllBrands = (options) => {
 	return useQuery(['brands'], getAllBrands, {
@@ -28,6 +28,7 @@ export const useEditBrand = (options) => {
 		...options,
 		onSettled: () => {
 			queryClient.invalidateQueries(['brands']);
+			queryClient.invalidateQueries(['lastID']);
 		},
 	});
 };
@@ -40,5 +41,13 @@ export const useDeleteBrand = (options) => {
 		onSettled: () => {
 			queryClient.invalidateQueries(['brands']);
 		},
+	});
+};
+
+export const useGetLastID = (options) => {
+	// const queryClient = useQueryClient();
+
+	return useQuery(['lastID'], getLastID, {
+		...options,
 	});
 };

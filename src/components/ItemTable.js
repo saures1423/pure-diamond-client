@@ -98,8 +98,10 @@ const ItemTable = ({ data }) => {
 		},
 	];
 
-	const filteredItems = data?.filter((item) =>
-		item.ItemName.toLowerCase().includes(filterText.toLowerCase())
+	const filteredItems = data?.filter(
+		(item) =>
+			item.ItemName.toLowerCase().includes(filterText.toLowerCase()) ||
+			item.ItemID.toString().includes(filterText.toLowerCase())
 	);
 
 	const subHeaderComponentMemo = React.useMemo(() => {

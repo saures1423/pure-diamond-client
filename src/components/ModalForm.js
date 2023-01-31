@@ -1,12 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { BrandStateContext } from '../context/BrandStateContext';
 import { useGetAllBrands } from '../hooks/query/brand';
-import { useEditItem, usePostItem } from '../hooks/query/item';
+import { useEditItem, useGetLastID, usePostItem } from '../hooks/query/item';
 
 const ModalForm = () => {
+	const queryClient = useQueryClient();
 	const { globalState, edit, setEdit, lastID } = useContext(BrandStateContext);
 
 	const [show, setShow] = useState(false);
@@ -35,9 +37,13 @@ const ModalForm = () => {
 
 	const { data } = useGetAllBrands();
 
+	const { data: dataLastID } = useGetLastID();
+
 	const { mutate, isLoading: addIsLoading } = usePostItem({
 		onSuccess: () => {
+			queryClient.invalidateQueries(['lastID-item']);
 			handleClose();
+			setValue('ItemID', dataLastID?.lastID[0]?.AUTO_INCREMENT);
 			toast.success('New inventory item has been added.');
 		},
 	});
@@ -47,6 +53,7 @@ const ModalForm = () => {
 			if (Object.keys(data).length === 0) return;
 			handleClose();
 			reset();
+			setValue('ItemID', dataLastID?.lastID[0]?.AUTO_INCREMENT);
 			// setValue('BrandID', lastID);
 			toast.success('Inventory item has been updated.');
 		},
@@ -80,8 +87,8 @@ const ModalForm = () => {
 	]);
 
 	useEffect(() => {
-		setValue('ItemID', lastID);
-	}, [lastID, setValue]);
+		setValue('ItemID', dataLastID?.lastID[0]?.AUTO_INCREMENT);
+	}, [dataLastID?.lastID, lastID, setValue]);
 
 	// if (isLoading) {
 	// 	return <h3>Loading</h3>;
@@ -90,7 +97,7 @@ const ModalForm = () => {
 		setShow(false);
 		setEdit(false);
 		reset();
-		setValue('ItemID', lastID);
+		setValue('ItemID', dataLastID?.lastID[0]?.AUTO_INCREMENT);
 	};
 
 	const onSubmit = (data) => {
